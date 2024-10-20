@@ -1,11 +1,6 @@
-﻿using ProtoBuf.Grpc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using GrpcStudentManagementService.Exceptions;
 using System.Runtime.Serialization;
 using System.ServiceModel;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Shared
 {
@@ -13,44 +8,48 @@ namespace Shared
     public interface IStudentService
     {
         [OperationContract]
-        public StudentShared? GetStudentById(int studentId);
+        public Result<StudentShared> GetStudentById(RequestId request);
         [OperationContract]
-        public List<StudentShared> GetAllStudents();
+        public Result<List<StudentShared>> GetAllStudents();
         [OperationContract]
-        public void AddStudent(StudentShared student);
+        public Result AddStudent(StudentShared student);
         [OperationContract]
-        public void UpdateStudent(StudentShared student);
+        public Result UpdateStudent(StudentShared student);
         [OperationContract]
-        public void DeleteStudent(int studentId);
+        public Result DeleteStudent(RequestId request);
     }
 
+    [DataContract]
+    public class StudentRequestId
+    {
+        [DataMember(Order = 1)]
+        public int Id { get; set; }
+    }
+
+    [DataContract]
     public class StudentShared
     {
         [DataMember(Order = 1)]
         public int StudentId { get; set; }
 
         [DataMember(Order = 2)]
-        public string StudentName { get; set; };
+        public string StudentName { get; set; }
 
         [DataMember(Order = 3)]
         public DateTime Dob { get; set; }
 
         [DataMember(Order = 4)]
         public string Address { get; set; }
-        
+
         [DataMember(Order = 5)]
-        public string TeacherId { get; set; }
-        
-        [DataMember(Order = 6)]
-        public string TeacherName { get; set; }
-        
-        [DataMember(Order = 7)]
         public int ClassId { get; set; }
-        
-        [DataMember(Order = 8)]
+
+        [DataMember(Order = 6)]
         public string ClassName { get; set; }
-        
-        [DataMember(Order = 9)]
+
+        [DataMember(Order = 7)]
         public string Subject { get; set; }
     }
+
+    //public class StudentResponse : Result<StudentShared> { }
 }

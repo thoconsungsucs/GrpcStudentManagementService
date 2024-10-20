@@ -4,6 +4,6 @@
     {
         public virtual int TeacherId { get; }
         public virtual string TeacherName { get; set; }
-        public DateTime Dob { get; set;}
+        public virtual DateTime Dob { get; set; }
     }
 }

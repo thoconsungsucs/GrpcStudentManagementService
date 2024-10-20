@@ -1,23 +1,35 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using GrpcStudentManagementService.Exceptions;
+using System.Runtime.Serialization;
+using System.ServiceModel;
 
 namespace Shared
 {
+    [ServiceContract]
     public interface IClassService
     {
-        public ClassShared? GetClassById(int classId);
-        public List<ClassShared> GetAllClasses();
+        [OperationContract]
+        public Result<ClassShared> GetClassById(RequestId classId);
+        [OperationContract]
+        public Result<List<ClassShared>> GetAllClasses();
+
     }
 
+    [DataContract]
     public class ClassShared
     {
+        [DataMember(Order = 1)]
         public int ClassId { get; set; }
+
+        [DataMember(Order = 2)]
         public string ClassName { get; set; }
+
+        [DataMember(Order = 3)]
         public string Subject { get; set; }
+
+        [DataMember(Order = 4)]
         public string TeacherId { get; set; }
+
+        [DataMember(Order = 5)]
         public string TeacherName { get; set; }
     }
 

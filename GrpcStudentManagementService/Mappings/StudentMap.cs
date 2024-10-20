@@ -1,5 +1,5 @@
 ﻿using FluentNHibernate.Mapping;
-using StudentManagement2.Model;
+using GrpcStudentManagementService.Models;
 
 namespace GrpcStudentManagementService.Mappings
 {
@@ -8,8 +8,8 @@ namespace GrpcStudentManagementService.Mappings
         public StudentMap()
         {
             Table("Student");
-            Id(x => x.Id, "StudentId");
-            Map(x => x.Name, "StudentName");
+            Id(x => x.StudentId, "StudentId");
+            Map(x => x.StudentName, "StudentName");
             Map(x => x.Dob, "Dob");
             Map(x => x.Address, "Address");
             References(x => x.Class, "ClassId");

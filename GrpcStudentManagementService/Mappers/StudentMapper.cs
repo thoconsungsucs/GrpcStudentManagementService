@@ -6,11 +6,14 @@ namespace GrpcStudentManagementService.Mappers
 {
     public class StudentMapper : Profile
     {
-        public StudentMapper() 
+        public StudentMapper()
         {
             CreateMap<Student, StudentShared>()
-                .ReverseMap();
+                .ForMember(dest => dest.ClassId, opt => opt.MapFrom(src => src.Class != null ? src.Class.ClassId : 0))
+                .ForMember(dest => dest.ClassName, opt => opt.MapFrom(src => src.Class != null ? src.Class.ClassName : string.Empty));
 
+            CreateMap<StudentShared, Student>()
+                .ForMember(dest => dest.Class, opt => opt.MapFrom(src => new Class { ClassId = src.ClassId, ClassName = string.Empty, Subject = string.Empty }));
         }
     }
 }

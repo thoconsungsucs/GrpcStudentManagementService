@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
+using GrpcStudentManagementService.Exceptions;
 using GrpcStudentManagementService.Models;
 using GrpcStudentManagementService.Repositories.Interfaces;
 using Shared;
+using Shared.Exceptions;
 
 namespace GrpcStudentManagementService.Services
 {
@@ -11,68 +13,142 @@ namespace GrpcStudentManagementService.Services
         public IClassRepository _classRepository;
         public IMapper _studentMapper;
         public IMapper _classMapper;
+        public ILogger<StudentService> _logger;
 
         public StudentService(
-            IStudentRepository studentRepository, 
-            IMapper studentMapper, 
+            IStudentRepository studentRepository,
+            IMapper studentMapper,
             IMapper classMapper,
-            IClassRepository classRepository)
+            IClassRepository classRepository,
+            ILogger<StudentService> logger)
         {
             _studentRepository = studentRepository;
             _studentMapper = studentMapper;
             _classMapper = classMapper;
             _classRepository = classRepository;
+            _logger = logger;
         }
 
-        public void AddStudent(StudentShared studentShared)
+        public Result AddStudent(StudentShared studentShared)
         {
-            var isAnyClass = _classRepository.IsAny(studentShared.ClassId);
-            if (!isAnyClass)
+            try
             {
-                throw new Exception("Class does not exist");
-            }
-            var student = _studentMapper.Map<Student>(studentShared);
-            _studentRepository.AddStudent(student);
-        }
+                var isAnyClass = _classRepository.IsAny(studentShared.ClassId);
+                if (!isAnyClass)
+                {
+                    return StudentError.StudentClassNotFound(studentShared.ClassId);
+                }
 
-        public void DeleteStudent(int studentId)
-        {
-            var student = _studentRepository.GetStudentById(studentId);
-            if (student == null)
+                var student = _studentMapper.Map<Student>(studentShared);
+                _studentRepository.AddStudent(student);
+            }
+            catch (Exception ex)
             {
-                throw new Exception($"Student {studentId} does not exist");
+                _logger.LogError(ex, "Error adding student");
+                return ex.Message;
             }
-            _studentRepository.DeleteStudent(student);
+            return Result.Success();
         }
 
-        public List<StudentShared> GetAllStudents()
+        public Result DeleteStudent(RequestId requestId)
         {
-            var students = _studentRepository.GetAllStudents();
-            return _studentMapper.Map<List<StudentShared>>(students);
-        }
-
-        public StudentShared? GetStudentById(int studentId)
-        {
-            var student = _studentRepository.GetStudentById(studentId);
-            return _studentMapper.Map<StudentShared>(student);
-        }
-
-        public void UpdateStudent(StudentShared studentShared)
-        {
-            var student = _studentRepository.GetStudentById(studentShared.StudentId);
-            if (student == null)
+            try
             {
-                throw new Exception($"Student {studentShared.StudentId} does not exist");
-            }
-            student.StudentName = studentShared.StudentName;
-            student.Address = studentShared.Address;
+                var student = _studentRepository.GetStudentById(requestId.Value);
 
-            var classs = _classRepository.GetClassById(studentShared.ClassId);
-            if (classs == null)
-            {
-                throw new Exception("");
+                if (student == null)
+                {
+                    return StudentError.StudentClassNotFound(requestId.Value);
+                }
+
+                _studentRepository.DeleteStudent(student);
             }
-            _studentRepository.UpdateStudent(student);
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error adding student");
+                return ex.Message;
+            }
+            return Result.Success();
+        }
+
+        public Result<List<StudentShared>> GetAllStudents()
+        {
+            try
+            {
+                var students = _studentRepository.GetAllStudents();
+                var mapped = _studentMapper.Map<List<StudentShared>>(students);
+                var res = new Result<List<StudentShared>>(_studentMapper.Map<List<StudentShared>>(students), true, string.Empty);
+                return _studentMapper.Map<List<StudentShared>>(students);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting all students");
+                return ex.Message;
+            }
+        }
+
+        public Result<StudentShared> GetStudentById(RequestId requestId)
+        {
+            try
+            {
+                var student = _studentRepository.GetStudentById(requestId.Value);
+
+                if (student == null)
+                {
+                    return StudentError.StudentNotFound(requestId.Value);
+                }
+
+                return _studentMapper.Map<StudentShared>(student);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting student by id");
+                return ex.Message;
+            }
+        }
+
+        //public StudentShared GetStudentById(RequestId requestId)
+        //{
+        //    try
+        //    {
+        //        var student = _studentRepository.GetStudentById(requestId.Value);
+        //        return _studentMapper.Map<StudentShared>(student);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _logger.LogError(ex, "Error getting student by id");
+        //        throw;
+        //    }
+        //}
+
+        public Result UpdateStudent(StudentShared studentShared)
+        {
+            try
+            {
+                var student = _studentRepository.GetStudentById(studentShared.StudentId);
+
+                if (student == null)
+                {
+                    return StudentError.StudentNotFound(studentShared.StudentId);
+                }
+
+                student.StudentName = studentShared.StudentName;
+                student.Address = studentShared.Address;
+
+                var classs = _classRepository.GetClassById(studentShared.ClassId);
+                if (classs == null)
+                {
+                    return StudentError.StudentClassNotFound(studentShared.ClassId);
+                }
+
+                _studentRepository.UpdateStudent(student);
+                return Result.Success();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error updating student");
+                return ex.Message;
+            }
         }
     }
 }
