@@ -7,7 +7,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GrpcStudentManagementServic
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shared", "Shared\Shared.csproj", "{9795E3F4-53DE-4215-95D8-8B6DB7BEFF50}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Client", "Client\Client.csproj", "{B0C84B97-7E87-4E34-A0C0-D646C57DE789}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Client", "Client\Client.csproj", "{B0C84B97-7E87-4E34-A0C0-D646C57DE789}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorClient", "BlazorClient\BlazorClient.csproj", "{59C4E069-9A19-4EEE-B417-AF5ED47B3276}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +29,10 @@ Global
 		{B0C84B97-7E87-4E34-A0C0-D646C57DE789}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B0C84B97-7E87-4E34-A0C0-D646C57DE789}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B0C84B97-7E87-4E34-A0C0-D646C57DE789}.Release|Any CPU.Build.0 = Release|Any CPU
+		{59C4E069-9A19-4EEE-B417-AF5ED47B3276}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{59C4E069-9A19-4EEE-B417-AF5ED47B3276}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{59C4E069-9A19-4EEE-B417-AF5ED47B3276}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{59C4E069-9A19-4EEE-B417-AF5ED47B3276}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
