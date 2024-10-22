@@ -17,6 +17,8 @@ namespace Shared
         public Result UpdateStudent(StudentShared student);
         [OperationContract]
         public Result DeleteStudent(RequestId request);
+        [OperationContract]
+        public Task<Result<ListInfo<StudentShared>>> GetAllPaginationAsync(PaginationRequest request);
     }
 
     [DataContract]
@@ -51,5 +53,5 @@ namespace Shared
         public string Subject { get; set; }
     }
 
-    //public class StudentResponse : Result<StudentShared> { }
+
 }

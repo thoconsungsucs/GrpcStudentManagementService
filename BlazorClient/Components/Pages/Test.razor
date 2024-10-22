@@ -2,31 +2,81 @@
 @rendermode InteractiveServer
 @using AntDesign.TableModels
 @using System.ComponentModel
-
+@inject IStudentService StudentService
+@inject IClassService ClassService
+@inject IMessageService _message
 <h3>Test</h3>
 
-<Table  @ref="table"
-        TItem="WeatherForecast"
-        DataSource="@forecasts"
-        Total="_total"
-        OnChange="OnChange"
-        @bind-PageIndex="_pageIndex"
-        @bind-PageSize="_pageSize"
-        @bind-SelectedRows="selectedRows">
+<Button Type="primary" @onclick="()=> Edit(new StudentShared())">New</Button>
+<Table @ref="table"
+       TItem="StudentShared"
+       DataSource="@students"
+       Total="_total"
+       OnChange="OnChange"
+       @bind-PageIndex="_pageIndex"
+       @bind-PageSize="_pageSize"
+       @bind-SelectedRows="selectedRows">
 
-    <Selection Key="@(context.Id.ToString())"/>
-    <Column @bind-Field="@context.Id" Sortable />
-    <Column @bind-Field="@context.Date" Sortable />
-    <Column @bind-Field="@context.TemperatureC" Sortable />
-    <Column @bind-Field="@context.TemperatureF" Sortable />
-    <Column @bind-Field="@context.Summary" Sortable />
-    <Column Title="Hot" Field="@context.Hot">
-        <Switch @bind-Value="@context.Hot" />
-    </Column>
-    <ActionColumn>
+
+    <Selection Key="@(context.StudentId.ToString())" />
+    <Column @bind-Field="@context.StudentName" />
+    <Column @bind-Field="@context.Dob" Format="dd/MM/yyyy" />
+    <Column @bind-Field="@context.Address" />
+    <Column @bind-Field="@context.ClassName" />
+
+    <ActionColumn Title="Action">
         <Space>
             <SpaceItem>
-                <Button Danger OnClick="() => Delete(context.Id)">Delete</Button>
+                <Button Type="primary" OnClick="@(()=>{ Edit(context); })">
+                    Edit
+                </Button>
+
+                <Modal Title="Edit"
+                       @bind-Visible="@_visible"
+                       OnOk="HandleOk"
+                       OnCancel="HandleCancel">
+                    <Space Direction="DirectionVHType.Vertical" Size="@("small")">
+                        <SpaceItem>
+                            <Text>Student ID</Text>
+                            <Input Placeholder="StudentId" @bind-Value="@_student.StudentId" Disabled />
+                        </SpaceItem>
+
+                        <SpaceItem>
+                            <Text>Student Name</Text>
+                            <Input Placeholder="StudentName" @bind-Value="@_student.StudentName" />
+                        </SpaceItem>
+
+                        <SpaceItem>
+                            <Text>Student Address</Text>
+                            <Input Placeholder="StudentAddress" @bind-Value="@_student.Address" />
+                        </SpaceItem>
+
+                        <SpaceItem>
+                            <Text>Student Dob</Text>
+                            <br />
+                            <DatePicker @bind-Value="@_student.Dob" Format="dd/MM/yyyy" />
+                        </SpaceItem>
+
+                        <SpaceItem>
+                            <Text>Student Class Name</Text>
+                            <br />
+                            <Select DataSource="@_classes"
+                                    @bind-Value="@_student.ClassId"
+                                    ValueName="@nameof(ClassShared.ClassId)"
+                                    LabelName="@nameof(ClassShared.ClassName)"
+                                    Style="width: 200px"
+                                    Placeholder="Select class"
+                                    EnableSearch
+                                    AllowClear>
+                            </Select>
+                        </SpaceItem>
+                    </Space>
+                </Modal>
+
+
+            </SpaceItem>
+            <SpaceItem>
+                <Button Danger OnClick="() => Delete(context.StudentId)">Delete</Button>
             </SpaceItem>
         </Space>
     </ActionColumn>
@@ -40,90 +90,100 @@
     Selected Items
 </h5>
 
-@if(selectedRows !=null && selectedRows.Any())
+@if (selectedRows != null && selectedRows.Any())
 {
-    <Button Danger Size="small" OnClick = "@(e=> { selectedRows = null; })"> Clear </Button>
-    foreach (var item in selectedRows)  
-    {  
-        <Tag @key="item.Id" Closable OnClose="@(e=>RemoveSelection(@item.Id))">@item.Id-@item.Summary</Tag>
-
+    <Button Danger Size="small" OnClick="@(e=> { selectedRows = null; })"> Clear </Button>
+    foreach (var item in selectedRows)
+    {
+        <Tag @key="item.StudentId" Closable OnClose="@(e=>RemoveSelection(@item.StudentId))">@item.StudentId-@item.StudentName</Tag>
     }
 }
 
-<br/>
-
-<Button OnClick="()=> {_pageIndex--; }">Previous Page</Button>  
-<Button OnClick="()=> {_pageIndex++; }">Next Page</Button>
-
 @code {
-    WeatherForecast[] forecasts;
-
-    IEnumerable<WeatherForecast> selectedRows;
+    StudentShared[]? students;
+    IEnumerable<StudentShared>? selectedRows;
     ITable table;
-
+    bool _visible = false;
     int _pageIndex = 1;
-    int _pageSize = 8;
+    int _pageSize = 4;
     int _total = 0;
+
+    List<ClassSelection> _classes = new List<ClassSelection>();
+
+    StudentShared _student = new StudentShared();
 
     protected override async Task OnInitializedAsync()
     {
+        var classReply = await ClassService.GetClassSelectionAsync();
+        if (classReply.IsSuccess)
+        {
+            _classes = classReply.Value;
+        }
+    }
+
+    private void HandleCancel()
+    {
+        _student = new StudentShared();
+    }
+
+    private void Edit(StudentShared studentShared)
+    {
+        _visible = true;
+        _student = studentShared;
     }
 
     private void Delete(int id)
     {
-        forecasts = forecasts.Where(x => x.Id != id).ToArray();
         _total = _total - 1;
 
     }
 
     public void RemoveSelection(int id)
     {
-        selectedRows = selectedRows.Where(x => x.Id != id);
+        selectedRows = selectedRows.Where(x => x.StudentId != id);
     }
 
-    async Task OnChange(QueryModel<WeatherForecast> queryModel)
+    async Task OnChange(QueryModel<StudentShared> queryModel)
     {
-        forecasts = await GetWeatherForecastsAsync(queryModel.PageIndex, queryModel.PageSize);
+        var pagination = new PaginationRequest
+            {
+                PageIndex = queryModel.PageIndex,
+                PageSize = queryModel.PageSize
+            };
+        var reply = await StudentService.GetAllPaginationAsync(pagination);
+        if (reply.IsSuccess)
+        {
+            students = reply.Value.List.ToArray();
+            _total = reply.Value.Total;
+        }
         _pageIndex = queryModel.PageIndex;
         _pageSize = queryModel.PageSize;
-        _total = 50;
     }
 
-    private class WeatherForecast
+    async Task HandleOk()
     {
-        public int Id { get; set; }
-        public DateOnly Date { get; set; }
-        [DisplayName("Temp. (C)")]
-        public int TemperatureC { get; set; }
-        public string? Summary { get; set; }
-        public int TemperatureF { get; set; }
-        public bool Hot { get; set; }
-    }
-
-    private List<WeatherForecast> GetWeatherForecasts()
-    {
-        var rnd = new Random();
-        var summaries = new[] { "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching" };
-        var forcastList = new List<WeatherForecast>();
-        for (int i = 1; i <= 100; i++)
+        if (_student.StudentId > 0)
         {
-            var r = rnd.Next(-20, 55);
-            forcastList.Add(new WeatherForecast
+            // Update existing student
+            var reply = StudentService.UpdateStudent(_student);
+            if (reply.IsSuccess)
             {
-                Id = i,
-                Date = DateOnly.FromDateTime(DateTime.Now.AddDays(i)),
-                TemperatureC = r,
-                Hot = r > 30,
-                TemperatureF = 32 + (int)(r / 0.5556),
-                Summary = summaries[Random.Shared.Next(summaries.Length)],
-            });
+                // Close modal and refresh data
+                _visible = false;
+                await _message.Success("Update student successfully");
+                table.ReloadData();
+            }
         }
-        return forcastList;
-    }
-
-    private Task<WeatherForecast[]> GetWeatherForecastsAsync(int pageInxdex, int pageSize)
-    {
-        var forcastList = GetWeatherForecasts().Skip((pageInxdex - 1) * pageSize).Take(pageSize).ToList();
-        return Task.FromResult(forcastList.ToArray());
+        else
+        {
+            // Add new student
+            var reply = StudentService.AddStudent(_student);
+            if (reply.IsSuccess)
+            {
+                // Close modal and refresh data
+                _visible = false;
+                table.ReloadData();
+            }
+        }
     }
 }

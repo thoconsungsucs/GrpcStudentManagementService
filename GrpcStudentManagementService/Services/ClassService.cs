@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using GrpcStudentManagementService.Exceptions;
+using GrpcStudentManagementService.Models;
 using GrpcStudentManagementService.Repositories.Interfaces;
 using Shared;
 using Shared.Exceptions;
@@ -30,6 +31,22 @@ namespace GrpcStudentManagementService.Services
                 return ClassError.ClassNotFound(requestId.Value);
             }
             return _classMapper.Map<ClassShared>(_classRepository.GetClassById(requestId.Value));
+        }
+
+        public async Task<Result<List<ClassSelection>>> GetClassSelectionAsync()
+        {
+            var query = _classRepository.GetAllAsIQueryAble().Select(c => new Class
+            {
+                ClassId = c.ClassId,
+                ClassName = c.ClassName,
+            });
+            var classSelections = (await _classRepository.ExecuteIQueryAbleAsync(query)).Select(c => new ClassSelection
+            {
+                ClassId = c.ClassId,
+                ClassName = c.ClassName,
+            }).ToList();
+            return classSelections;
+
         }
     }
 }

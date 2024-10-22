@@ -1,6 +1,6 @@
 ﻿using GrpcStudentManagementService.Models;
 using GrpcStudentManagementService.Repositories.Interfaces;
-using NHibernate;
+using NHibernate.Linq;
 using ISession = NHibernate.ISession;
 namespace GrpcStudentManagementService.Repositories
 {
@@ -13,9 +13,19 @@ namespace GrpcStudentManagementService.Repositories
             _session = session;
         }
 
+        public async Task<List<Class>> ExecuteIQueryAbleAsync(IQueryable<Class> queryable)
+        {
+            return await queryable.ToListAsync();
+        }
+
         public List<Class> GetAllClasses()
         {
             return _session.Query<Class>().ToList();
+        }
+
+        public IQueryable<Class> GetAllAsIQueryAble()
+        {
+            return _session.Query<Class>();
         }
 
         public Class? GetClassById(int classId)
@@ -28,5 +38,6 @@ namespace GrpcStudentManagementService.Repositories
             return _session.Query<Class>()
                 .Any(c => c.ClassId == classId);
         }
+
     }
 }

@@ -11,6 +11,8 @@ namespace Shared
         public Result<ClassShared> GetClassById(RequestId classId);
         [OperationContract]
         public Result<List<ClassShared>> GetAllClasses();
+        [OperationContract]
+        public Task<Result<List<ClassSelection>>> GetClassSelectionAsync();
 
     }
 
@@ -33,4 +35,12 @@ namespace Shared
         public string TeacherName { get; set; }
     }
 
+    [DataContract]
+    public class ClassSelection
+    {
+        [DataMember(Order = 1)]
+        public int ClassId { get; set; }
+        [DataMember(Order = 2)]
+        public string ClassName { get; set; }
+    }
 }

@@ -1,6 +1,7 @@
 ﻿using GrpcStudentManagementService.Models;
 using GrpcStudentManagementService.Repositories.Interfaces;
 using NHibernate;
+using NHibernate.Linq;
 using ISession = NHibernate.ISession;
 
 namespace GrpcStudentManagementService.Repositories
@@ -49,6 +50,16 @@ namespace GrpcStudentManagementService.Repositories
         public Student GetStudentById(int id)
         {
             return _session.Get<Student>(id);
+        }
+
+        public async Task<List<Student>> GetAllPagination(int pageIndex, int pageSize)
+        {
+            return await _session.Query<Student>().Skip((pageIndex - 1) * pageSize).Take(pageSize).ToListAsync();
+        }
+
+        public async Task<int> CountAsync()
+        {
+            return await _session.Query<Student>().CountAsync();
         }
     }
 }

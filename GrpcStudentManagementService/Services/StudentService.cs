@@ -71,6 +71,26 @@ namespace GrpcStudentManagementService.Services
             return Result.Success();
         }
 
+        public async Task<Result<ListInfo<StudentShared>>> GetAllPaginationAsync(PaginationRequest request)
+        {
+            try
+            {
+                var students = await _studentRepository.GetAllPagination(request.PageIndex, request.PageSize);
+                var Total = _studentRepository.CountAsync();
+                var res = new ListInfo<StudentShared>
+                {
+                    List = _studentMapper.Map<List<StudentShared>>(students),
+                    Total = Total.Result
+                };
+                return res;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting all students info");
+                return ex.Message;
+            }
+        }
+
         public Result<List<StudentShared>> GetAllStudents()
         {
             try
@@ -107,20 +127,6 @@ namespace GrpcStudentManagementService.Services
             }
         }
 
-        //public StudentShared GetStudentById(RequestId requestId)
-        //{
-        //    try
-        //    {
-        //        var student = _studentRepository.GetStudentById(requestId.Value);
-        //        return _studentMapper.Map<StudentShared>(student);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        _logger.LogError(ex, "Error getting student by id");
-        //        throw;
-        //    }
-        //}
-
         public Result UpdateStudent(StudentShared studentShared)
         {
             try
@@ -134,12 +140,15 @@ namespace GrpcStudentManagementService.Services
 
                 student.StudentName = studentShared.StudentName;
                 student.Address = studentShared.Address;
+                student.Dob = studentShared.Dob;
 
                 var classs = _classRepository.GetClassById(studentShared.ClassId);
                 if (classs == null)
                 {
                     return StudentError.StudentClassNotFound(studentShared.ClassId);
                 }
+
+                student.Class = classs;
 
                 _studentRepository.UpdateStudent(student);
                 return Result.Success();
