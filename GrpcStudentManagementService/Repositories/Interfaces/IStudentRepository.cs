@@ -11,5 +11,10 @@ namespace GrpcStudentManagementService.Repositories.Interfaces
         public void DeleteStudent(Student student);
         public Task<List<Student>> GetAllPagination(int pageIndex, int pageSize);
         public Task<int> CountAsync();
+        public Task<Student> GetStudentByIdAsync(int id);
+        public Task AddStudentAsync(Student student);
+        public Task UpdateStudentAsync(Student student);
+
+        public Task DeleteStudentAsync(Student student);
     }
 }

@@ -18,7 +18,7 @@ namespace GrpcStudentManagementService
                     _sessionFactory = Fluently.Configure()
                         .Database(MsSqlConfiguration.MsSql2012
                             .ConnectionString(c => c
-                                .Server("NGUYENDUYTHANH")
+                                .Server("DESKTOP-9P5CFP6")
                                 .Database("StudentManagement")
                                 .TrustedConnection()))
                         //.ShowSql())

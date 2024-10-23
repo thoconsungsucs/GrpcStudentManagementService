@@ -1,6 +1,7 @@
 ﻿@page "/counter"
 @rendermode InteractiveServer
-
+@inject IMessageService _message
+@inject INotificationService _notice
 <PageTitle>Counter</PageTitle>
 
 <h1>Counter</h1>
@@ -12,8 +13,20 @@
 @code {
     private int currentCount = 0;
 
-    private void IncrementCount()
+    private async Task IncrementCount()
     {
         currentCount++;
+        await _message.Success("This is a success message", 100);
+        await NoticeWithIcon(NotificationType.Success);
+    }
+
+    private async Task NoticeWithIcon(NotificationType type)
+    {
+        await _notice.Open(new NotificationConfig()
+            {
+                Message = "Notification Title",
+                Description = "This is the content of the notification. This is the content of the notification. This is the content of the notification.",
+                NotificationType = type
+            });
     }
 }

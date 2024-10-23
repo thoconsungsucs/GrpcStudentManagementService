@@ -19,6 +19,12 @@ namespace Shared
         public Result DeleteStudent(RequestId request);
         [OperationContract]
         public Task<Result<ListInfo<StudentShared>>> GetAllPaginationAsync(PaginationRequest request);
+        [OperationContract]
+        public Task<Result> AddAsync(StudentShared student);
+        [OperationContract]
+        public Task<Result> UpdateAsync(StudentShared student);
+        [OperationContract]
+        public Task<Result> DeleteAsync(RequestId request);
     }
 
     [DataContract]

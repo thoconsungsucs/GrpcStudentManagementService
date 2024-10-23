@@ -9,5 +9,7 @@ namespace GrpcStudentManagementService.Repositories.Interfaces
         public Task<List<Class>> ExecuteIQueryAbleAsync(IQueryable<Class> queryable);
         public Class? GetClassById(int classId);
         public bool IsAny(int classId);
+
+        public Task<Class> GetClassByIdAsync(int classId);
     }
 }

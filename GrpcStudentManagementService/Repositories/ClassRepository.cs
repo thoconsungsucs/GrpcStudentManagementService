@@ -32,6 +32,11 @@ namespace GrpcStudentManagementService.Repositories
         {
             return _session.Get<Class>(classId);
         }
+        
+        public async Task<Class> GetClassByIdAsync(int classId)
+        {
+            return await _session.GetAsync<Class>(classId);
+        }
 
         public bool IsAny(int classId)
         {

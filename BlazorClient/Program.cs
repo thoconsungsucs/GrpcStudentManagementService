@@ -15,9 +15,7 @@ namespace BlazorClient
             // Add services to the container.
             builder.Services.AddRazorComponents()
                 .AddInteractiveServerComponents();
-
             builder.Services.AddAntDesign();
-
             builder.Services.AddSingleton(services =>
             {
                 // Get the service address from appsettings.json

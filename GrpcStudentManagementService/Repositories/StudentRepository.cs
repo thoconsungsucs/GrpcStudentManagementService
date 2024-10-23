@@ -51,6 +51,11 @@ namespace GrpcStudentManagementService.Repositories
         {
             return _session.Get<Student>(id);
         }
+        
+        public async Task<Student> GetStudentByIdAsync(int id)
+        {
+            return await _session.GetAsync<Student>(id);
+        }
 
         public async Task<List<Student>> GetAllPagination(int pageIndex, int pageSize)
         {
@@ -60,6 +65,33 @@ namespace GrpcStudentManagementService.Repositories
         public async Task<int> CountAsync()
         {
             return await _session.Query<Student>().CountAsync();
+        }
+
+        public async Task AddStudentAsync(Student student)
+        {
+            using (ITransaction transaction = _session.BeginTransaction())
+            {
+                await _session.SaveAsync(student);
+                transaction.Commit();
+            }
+        }
+        
+        public async Task UpdateStudentAsync(Student student)
+        {
+            using (ITransaction transaction = _session.BeginTransaction())
+            {
+                await _session.UpdateAsync(student);
+                transaction.Commit();
+            }
+        }
+
+        public async Task DeleteStudentAsync(Student student)
+        {
+            using (ITransaction transaction = _session.BeginTransaction())
+            {
+                await _session.DeleteAsync(student);
+                transaction.Commit();
+            }
         }
     }
 }

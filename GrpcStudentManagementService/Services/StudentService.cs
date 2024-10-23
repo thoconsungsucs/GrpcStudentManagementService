@@ -159,5 +159,81 @@ namespace GrpcStudentManagementService.Services
                 return ex.Message;
             }
         }
+
+        public async Task<Result> AddAsync(StudentShared studentShared)
+        {
+            try
+            {
+                var isAnyClass = _classRepository.IsAny(studentShared.ClassId);
+                if (!isAnyClass)
+                {
+                    return StudentError.StudentClassNotFound(studentShared.ClassId);
+                }
+
+                var student = _studentMapper.Map<Student>(studentShared);
+                await _studentRepository.AddStudentAsync(student);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error adding student");
+                return ex.Message;
+            }
+            return Result.Success();
+
+        }
+
+        public async Task<Result> UpdateAsync(StudentShared studentShared)
+        {
+            try
+            {
+                var student = await _studentRepository.GetStudentByIdAsync(studentShared.StudentId);
+
+                if (student == null)
+                {
+                    return StudentError.StudentNotFound(studentShared.StudentId);
+                }
+
+                student.StudentName = studentShared.StudentName;
+                student.Address = studentShared.Address;
+                student.Dob = studentShared.Dob;
+
+                var classs = await _classRepository.GetClassByIdAsync(studentShared.ClassId);
+                if (classs == null)
+                {
+                    return StudentError.StudentClassNotFound(studentShared.ClassId);
+                }
+
+                student.Class = classs;
+
+                await _studentRepository.UpdateStudentAsync(student);
+                return Result.Success();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error updating student");
+                return ex.Message;
+            }
+        }
+
+        public async Task<Result> DeleteAsync(RequestId requestId)
+        {
+            try
+            {
+                var student = await _studentRepository.GetStudentByIdAsync(requestId.Value);
+
+                if (student == null)
+                {
+                    return StudentError.StudentClassNotFound(requestId.Value);
+                }
+
+                await _studentRepository.DeleteStudentAsync(student);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error adding student");
+                return ex.Message;
+            }
+            return Result.Success();
+        }
     }
 }

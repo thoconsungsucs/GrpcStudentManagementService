@@ -1,4 +1,4 @@
-﻿@page "/test"
+﻿@page "/students"
 @rendermode InteractiveServer
 @using AntDesign.TableModels
 @using System.ComponentModel
@@ -93,97 +93,10 @@
 @if (selectedRows != null && selectedRows.Any())
 {
     <Button Danger Size="small" OnClick="@(e=> { selectedRows = null; })"> Clear </Button>
+    <Button Danger Size="small" OnClick="DeleteAll"> Delete All </Button>
     foreach (var item in selectedRows)
     {
         <Tag @key="item.StudentId" Closable OnClose="@(e=>RemoveSelection(@item.StudentId))">@item.StudentId-@item.StudentName</Tag>
     }
 }
 
-@code {
-    StudentShared[]? students;
-    IEnumerable<StudentShared>? selectedRows;
-    ITable table;
-    bool _visible = false;
-    int _pageIndex = 1;
-    int _pageSize = 4;
-    int _total = 0;
-
-    List<ClassSelection> _classes = new List<ClassSelection>();
-
-    StudentShared _student = new StudentShared();
-
-    protected override async Task OnInitializedAsync()
-    {
-        var classReply = await ClassService.GetClassSelectionAsync();
-        if (classReply.IsSuccess)
-        {
-            _classes = classReply.Value;
-        }
-    }
-
-    private void HandleCancel()
-    {
-        _student = new StudentShared();
-    }
-
-    private void Edit(StudentShared studentShared)
-    {
-        _visible = true;
-        _student = studentShared;
-    }
-
-    private void Delete(int id)
-    {
-        _total = _total - 1;
-
-    }
-
-    public void RemoveSelection(int id)
-    {
-        selectedRows = selectedRows.Where(x => x.StudentId != id);
-    }
-
-    async Task OnChange(QueryModel<StudentShared> queryModel)
-    {
-        var pagination = new PaginationRequest
-            {
-                PageIndex = queryModel.PageIndex,
-                PageSize = queryModel.PageSize
-            };
-        var reply = await StudentService.GetAllPaginationAsync(pagination);
-        if (reply.IsSuccess)
-        {
-            students = reply.Value.List.ToArray();
-            _total = reply.Value.Total;
-        }
-        _pageIndex = queryModel.PageIndex;
-        _pageSize = queryModel.PageSize;
-    }
-
-    async Task HandleOk()
-    {
-        if (_student.StudentId > 0)
-        {
-            // Update existing student
-            var reply = StudentService.UpdateStudent(_student);
-            if (reply.IsSuccess)
-            {
-                // Close modal and refresh data
-                _visible = false;
-                await _message.Success("Update student successfully");
-                table.ReloadData();
-            }
-        }
-        else
-        {
-            // Add new student
-            var reply = StudentService.AddStudent(_student);
-            if (reply.IsSuccess)
-            {
-                // Close modal and refresh data
-                _visible = false;
-                table.ReloadData();
-            }
-        }
-    }
-}
