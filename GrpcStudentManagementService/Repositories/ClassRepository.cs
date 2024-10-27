@@ -1,6 +1,6 @@
-﻿using GrpcStudentManagementService.Models;
-using GrpcStudentManagementService.Repositories.Interfaces;
+﻿using GrpcStudentManagementService.Repositories.Interfaces;
 using NHibernate.Linq;
+using GrpcStudentManagementService.Models;
 using ISession = NHibernate.ISession;
 namespace GrpcStudentManagementService.Repositories
 {

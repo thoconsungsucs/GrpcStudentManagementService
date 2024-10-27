@@ -1,6 +1,6 @@
 ﻿using System.Runtime.Serialization;
 
-namespace GrpcStudentManagementService.Exceptions
+namespace Shared.Exceptions
 {
     [DataContract]
     public class Result

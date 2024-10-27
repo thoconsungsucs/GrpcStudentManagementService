@@ -1,4 +1,5 @@
-﻿using GrpcStudentManagementService.Models;
+﻿using GrpcStudentManagementService.DTOs;
+using GrpcStudentManagementService.Models;
 
 namespace GrpcStudentManagementService.Repositories.Interfaces
 {
@@ -14,7 +15,7 @@ namespace GrpcStudentManagementService.Repositories.Interfaces
         public Task<Student> GetStudentByIdAsync(int id);
         public Task AddStudentAsync(Student student);
         public Task UpdateStudentAsync(Student student);
-
         public Task DeleteStudentAsync(Student student);
+        public Task<List<GenderCountItem>> GetGenderCountAsync(int classId = 0);
     }
 }

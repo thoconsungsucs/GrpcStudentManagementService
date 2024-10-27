@@ -1,0 +1,37 @@
+﻿@page "/genderchart"
+@attribute [StreamRendering]
+@rendermode InteractiveServer
+@using System.ComponentModel
+@using AntDesign.Charts
+@using Title = AntDesign.Charts.Title
+<h3>GenderChart</h3>
+
+@if (_genderData == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <Select DataSource="@_classes"
+            TItemValue="ClassSelection"
+            TItem="ClassSelection"
+            LabelInValue="true"
+            LabelName="@nameof(ClassSelection.ClassName)"
+            OnSelectedItemChanged="@(item => SearchByClassId(item))"
+            Placeholder="Select class"
+            EnableSearch
+            AllowClear
+            Style="width: 120px;">
+    </Select>
+
+    <Tabs>
+        <TabPane Key="1">
+            <TabTemplate>Gender Chart</TabTemplate>
+            <ChildContent>
+                <Bar Data="_genderData" @ref="barChart" Config="config1" />
+            </ChildContent>
+        </TabPane>
+    </Tabs>
+
+}
+

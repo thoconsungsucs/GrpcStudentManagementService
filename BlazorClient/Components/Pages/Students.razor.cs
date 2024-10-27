@@ -2,7 +2,7 @@
 {
     using AntDesign;
     using AntDesign.TableModels;
-    using Microsoft.AspNetCore.Components;
+    using BlazorClient.Models;
     using Shared;
     using System.Collections.Generic;
     using System.Linq;
@@ -11,21 +11,23 @@
 
     public partial class Students
     {
-        StudentShared[]? students;
-        IEnumerable<StudentShared>? selectedRows;
+        StudentShared[]? _students;
+        IEnumerable<StudentShared>? _selectedRows;
         ITable table;
         bool _visible = false;
         int _pageIndex = 1;
         int _pageSize = 4;
         int _total = 0;
-
+        List<GenderSelection> _genders = GenderList.Genders;
         List<ClassSelection> _classes = new List<ClassSelection>();
         StudentShared _student = new StudentShared();
-
+        string _selectedValue;
+        string _selectedItem;
 
 
         protected override async Task OnInitializedAsync()
         {
+
             var classReply = await ClassService.GetClassSelectionAsync();
             if (classReply.IsSuccess)
             {
@@ -63,7 +65,7 @@
 
         public void RemoveSelection(int id)
         {
-            selectedRows = selectedRows.Where(x => x.StudentId != id);
+            _selectedRows = _selectedRows.Where(x => x.StudentId != id);
         }
 
         async Task OnChange(QueryModel<StudentShared> queryModel)
@@ -76,12 +78,12 @@
             var reply = await StudentService.GetAllPaginationAsync(pagination);
             if (reply.IsSuccess)
             {
-                students = reply.Value.List.ToArray();
+                _students = reply.Value.List.ToArray();
                 _total = reply.Value.Total;
             }
             _pageIndex = queryModel.PageIndex;
             _pageSize = queryModel.PageSize;
-            selectedRows = [];
+            _selectedRows = [];
         }
 
         async Task HandleOk()
@@ -119,7 +121,7 @@
         async Task DeleteAll()
         {
             var stringBuilder = new StringBuilder();
-            foreach (var student in selectedRows)
+            foreach (var student in _selectedRows)
             {
                 var res = await StudentService.DeleteAsync(new RequestId { Value = student.StudentId });
                 if (!res.IsSuccess)

@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using GrpcStudentManagementService.Exceptions;
 using GrpcStudentManagementService.Models;
 using GrpcStudentManagementService.Repositories.Interfaces;
 using Shared;

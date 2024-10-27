@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using GrpcStudentManagementService.Models;
 using Shared;
+using GrpcStudentManagementService.Models;
 
 namespace GrpcStudentManagementService.Mappers
 {

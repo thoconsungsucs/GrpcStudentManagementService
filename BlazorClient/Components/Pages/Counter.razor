@@ -2,31 +2,42 @@
 @rendermode InteractiveServer
 @inject IMessageService _message
 @inject INotificationService _notice
+@inject IClassService ClassService
 <PageTitle>Counter</PageTitle>
 
 <h1>Counter</h1>
+<Select DataSource="@_classes"
+        @bind-Value="@_selectedValue"
+        TItemValue="ClassSelection"
+        TItem="ClassSelection"
+        LabelInValue="true"
+        LabelName="@nameof(ClassSelection.ClassName)"
+        OnSelectedItemChanged="@(item => OnChange(item))"
+        Style="width: 120px;">
+</Select>
+<br />
+<br />
+<p>
+    Selected Value: @_selectedValue <br />
+    Selected Item: @_selectedItem
+</p>
 
-<p role="status">Current count: @currentCount</p>
-
-<button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
-
-@code {
-    private int currentCount = 0;
-
-    private async Task IncrementCount()
+@code
+{
+    List<ClassSelection> _classes;
+    protected override async Task OnInitializedAsync()
     {
-        currentCount++;
-        await _message.Success("This is a success message", 100);
-        await NoticeWithIcon(NotificationType.Success);
+        var classReply = await ClassService.GetClassSelectionAsync();
+        if (classReply.IsSuccess)
+        {
+            _classes = classReply.Value;
+        }
     }
 
-    private async Task NoticeWithIcon(NotificationType type)
+    public void OnChange(ClassSelection classSelection)
     {
-        await _notice.Open(new NotificationConfig()
-            {
-                Message = "Notification Title",
-                Description = "This is the content of the notification. This is the content of the notification. This is the content of the notification.",
-                NotificationType = type
-            });
+        Console.WriteLine(classSelection.ClassId);
     }
+    ClassSelection _selectedValue;
+    ClassSelection _selectedItem;
 }

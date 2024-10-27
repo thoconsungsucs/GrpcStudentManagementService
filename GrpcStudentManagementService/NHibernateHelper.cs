@@ -1,8 +1,7 @@
 ﻿using FluentNHibernate.Cfg;
 using FluentNHibernate.Cfg.Db;
-using GrpcStudentManagementService.Models;
 using NHibernate;
-
+using GrpcStudentManagementService.Models;
 namespace GrpcStudentManagementService
 {
     public class NHibernateHelper

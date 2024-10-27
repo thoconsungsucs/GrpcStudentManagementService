@@ -1,9 +1,8 @@
 ﻿using AutoMapper;
-using GrpcStudentManagementService.Exceptions;
-using GrpcStudentManagementService.Models;
 using GrpcStudentManagementService.Repositories.Interfaces;
 using Shared;
 using Shared.Exceptions;
+using GrpcStudentManagementService.Models;
 
 namespace GrpcStudentManagementService.Services
 {
@@ -196,7 +195,7 @@ namespace GrpcStudentManagementService.Services
                 student.StudentName = studentShared.StudentName;
                 student.Address = studentShared.Address;
                 student.Dob = studentShared.Dob;
-
+                student.Gender = studentShared.Gender;
                 var classs = await _classRepository.GetClassByIdAsync(studentShared.ClassId);
                 if (classs == null)
                 {
@@ -234,6 +233,36 @@ namespace GrpcStudentManagementService.Services
                 return ex.Message;
             }
             return Result.Success();
+        }
+
+        public async Task<Result<List<BarChartItem>>> GetGenderCountAsync(RequestId? classRequestId = null)
+        {
+            try
+            {
+                int classId = classRequestId != null ? classRequestId.Value : 0;
+                var genderCounts = await _studentRepository.GetGenderCountAsync(classId);
+                var res = new List<BarChartItem>();
+                foreach (var item in genderCounts)
+                {
+                    res.Add(new BarChartItem
+                    {
+                        Label = item.ClassName,
+                        Type = Gender.Male.ToString(),
+                        Value = item.MaleCount
+                    });
+                    res.Add(new BarChartItem
+                    {
+                        Label = item.ClassName,
+                        Type = Gender.Female.ToString(),
+                        Value = item.FemaleCount
+                    });
+                }
+                return res;
+            } catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error when getting gender count");
+                return ex.Message;
+            }
         }
     }
 }

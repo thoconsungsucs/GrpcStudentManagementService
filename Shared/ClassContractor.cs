@@ -1,4 +1,4 @@
-﻿using GrpcStudentManagementService.Exceptions;
+﻿using Shared.Exceptions;
 using System.Runtime.Serialization;
 using System.ServiceModel;
 

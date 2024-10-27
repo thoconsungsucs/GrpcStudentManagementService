@@ -1,4 +1,5 @@
 ﻿using FluentNHibernate.Mapping;
+using Shared;
 using GrpcStudentManagementService.Models;
 
 namespace GrpcStudentManagementService.Mappings
@@ -12,6 +13,7 @@ namespace GrpcStudentManagementService.Mappings
             Map(x => x.StudentName, "StudentName");
             Map(x => x.Dob, "Dob");
             Map(x => x.Address, "Address");
+            Map(x => x.Gender, "Gender").CustomType<Gender>();
             References(x => x.Class, "ClassId");
         }
     }

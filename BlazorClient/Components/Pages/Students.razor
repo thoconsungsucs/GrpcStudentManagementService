@@ -7,21 +7,24 @@
 @inject IMessageService _message
 <h3>Test</h3>
 
+
+
 <Button Type="primary" @onclick="()=> Edit(new StudentShared())">New</Button>
 <Table @ref="table"
        TItem="StudentShared"
-       DataSource="@students"
+       DataSource="@_students"
        Total="_total"
        OnChange="OnChange"
        @bind-PageIndex="_pageIndex"
        @bind-PageSize="_pageSize"
-       @bind-SelectedRows="selectedRows">
+       @bind-SelectedRows="_selectedRows">
 
 
     <Selection Key="@(context.StudentId.ToString())" />
     <Column @bind-Field="@context.StudentName" />
     <Column @bind-Field="@context.Dob" Format="dd/MM/yyyy" />
     <Column @bind-Field="@context.Address" />
+    <Column @bind-Field="@context.Gender" />
     <Column @bind-Field="@context.ClassName" />
 
     <ActionColumn Title="Action">
@@ -49,6 +52,20 @@
                         <SpaceItem>
                             <Text>Student Address</Text>
                             <Input Placeholder="StudentAddress" @bind-Value="@_student.Address" />
+                        </SpaceItem>
+
+                        <SpaceItem>
+                            <Text>Student Gender</Text>
+                            <br />
+                            <Select DataSource="@_genders"
+                                    @bind-Value="@_student.Gender"
+                                    ValueName="@nameof(GenderSelection.Value)"
+                                    LabelName="@nameof(GenderSelection.Text)"
+                                    Style="width: 200px"
+                                    Placeholder="Select gender"
+                                    EnableSearch
+                                    AllowClear>
+                            </Select>
                         </SpaceItem>
 
                         <SpaceItem>
@@ -90,13 +107,12 @@
     Selected Items
 </h5>
 
-@if (selectedRows != null && selectedRows.Any())
+@if (_selectedRows != null && _selectedRows.Any())
 {
-    <Button Danger Size="small" OnClick="@(e=> { selectedRows = null; })"> Clear </Button>
+    <Button Danger Size="small" OnClick="@(e=> { _selectedRows = null; })"> Clear </Button>
     <Button Danger Size="small" OnClick="DeleteAll"> Delete All </Button>
-    foreach (var item in selectedRows)
+    foreach (var item in _selectedRows)
     {
         <Tag @key="item.StudentId" Closable OnClose="@(e=>RemoveSelection(@item.StudentId))">@item.StudentId-@item.StudentName</Tag>
     }
 }
-

@@ -1,4 +1,4 @@
-﻿using GrpcStudentManagementService.Exceptions;
+﻿using Shared.Exceptions;
 using System.Runtime.Serialization;
 using System.ServiceModel;
 
@@ -25,6 +25,8 @@ namespace Shared
         public Task<Result> UpdateAsync(StudentShared student);
         [OperationContract]
         public Task<Result> DeleteAsync(RequestId request);
+        [OperationContract]
+        public Task<Result<List<BarChartItem>>> GetGenderCountAsync(RequestId? requestId = null);
     }
 
     [DataContract]
@@ -48,16 +50,38 @@ namespace Shared
 
         [DataMember(Order = 4)]
         public string Address { get; set; }
-
+        
         [DataMember(Order = 5)]
-        public int ClassId { get; set; }
+        public Gender Gender { get; set; }
 
         [DataMember(Order = 6)]
-        public string ClassName { get; set; }
+        public int ClassId { get; set; }
 
         [DataMember(Order = 7)]
-        public string Subject { get; set; }
+        public string ClassName { get; set; }
+
     }
 
+    public enum Gender
+    {
+        Male,
+        Female
+    }
 
+    public class GenderSelection
+    {
+        public Gender Value { get; set; }
+        public string Text { get; set; }
+    }
+
+    [DataContract]
+    public class BarChartItem
+    {
+        [DataMember(Order = 1)]
+        public string Label { get; set; }
+        [DataMember(Order = 2)]
+        public string Type { get; set; }
+        [DataMember(Order = 3)]
+        public int Value { get; set; }
+    }
 }
