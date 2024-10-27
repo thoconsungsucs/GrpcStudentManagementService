@@ -1,10 +1,11 @@
-﻿using GrpcStudentManagementService.Repositories.Interfaces;
+﻿using GrpcStudentManagementService.DTOs;
+using GrpcStudentManagementService.Models;
+using GrpcStudentManagementService.Repositories.Interfaces;
 using NHibernate;
 using NHibernate.Linq;
-using GrpcStudentManagementService.Models;
-using ISession = NHibernate.ISession;
 using NHibernate.Transform;
-using GrpcStudentManagementService.DTOs;
+using Shared;
+using ISession = NHibernate.ISession;
 
 namespace GrpcStudentManagementService.Repositories
 {
@@ -59,14 +60,57 @@ namespace GrpcStudentManagementService.Repositories
             return await _session.GetAsync<Student>(id);
         }
 
-        public async Task<List<Student>> GetAllPagination(int pageIndex, int pageSize)
+        public IQueryable<Student> Filter(StudentFilter studentFilter)
         {
-            return await _session.Query<Student>().Skip((pageIndex - 1) * pageSize).Take(pageSize).ToListAsync();
+            var query = _session.Query<Student>();
+            if (studentFilter != null)
+            {
+                if (studentFilter.ClassId != 0)
+                {
+                    if (studentFilter.ClassId != 0)
+                    {
+                        query = query.Where(s => s.Class != null && s.Class.ClassId == studentFilter.ClassId);
+                    }
+                }
+                if (studentFilter.StudentId != 0)
+                {
+                    query = query.Where(s => s.StudentId == studentFilter.StudentId);
+                }
+
+                if (!string.IsNullOrEmpty(studentFilter.StudentName))
+                {
+                    query = query.Where(s => s.StudentName.Contains(studentFilter.StudentName));
+                }
+
+                if (!string.IsNullOrEmpty(studentFilter.Address))
+                {
+                    query = query.Where(s => s.Address.Contains(studentFilter.Address));
+                }
+                if (studentFilter.DobFrom != null)
+                {
+                    query = query.Where(s => s.Dob >= studentFilter.DobFrom);
+                }
+                if (studentFilter.DobTo != null)
+                {
+                    query = query.Where(s => s.Dob <= studentFilter.DobTo);
+                }
+            }
+            return query;
         }
 
-        public async Task<int> CountAsync()
+        public async Task<List<Student>> GetAllPagination(StudentFilter studentFilter)
         {
-            return await _session.Query<Student>().CountAsync();
+            var query = Filter(studentFilter);
+            return await query
+                .Skip((studentFilter.PageIndex - 1) * studentFilter.PageSize)
+                .Take(studentFilter.PageSize)
+                .ToListAsync();
+        }
+
+        public async Task<int> CountAsync(StudentFilter studentFilter)
+        {
+            var query = Filter(studentFilter);
+            return await query.CountAsync();
         }
 
         public async Task AddStudentAsync(Student student)
@@ -115,14 +159,14 @@ namespace GrpcStudentManagementService.Repositories
                     ISNULL(gc.FemaleCount, 0) AS FemaleCount
                 FROM Class c
                 LEFT JOIN GenderCounts gc ON c.ClassId = gc.ClassId
-                WHERE :classId = 0 OR c.ClassId = :classId
+                WHERE :ClassId = 0 OR c.ClassId = :ClassId
                 ORDER BY c.ClassId
                 ")
                 .AddScalar("ClassId", NHibernateUtil.Int32)
                 .AddScalar("ClassName", NHibernateUtil.String)
                 .AddScalar("MaleCount", NHibernateUtil.Int32)
                 .AddScalar("FemaleCount", NHibernateUtil.Int32)
-                .SetParameter("classId", classId)
+                .SetParameter("ClassId", classId)
                 .SetResultTransformer(Transformers.AliasToBean<GenderCountItem>());
 
             var result = await sqlQuery.ListAsync<GenderCountItem>();

@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
+using GrpcStudentManagementService.Models;
 using GrpcStudentManagementService.Repositories.Interfaces;
 using Shared;
 using Shared.Exceptions;
-using GrpcStudentManagementService.Models;
 
 namespace GrpcStudentManagementService.Services
 {
@@ -70,16 +70,16 @@ namespace GrpcStudentManagementService.Services
             return Result.Success();
         }
 
-        public async Task<Result<ListInfo<StudentShared>>> GetAllPaginationAsync(PaginationRequest request)
+        public async Task<Result<ListInfo<StudentShared>>> GetAllPaginationAsync(StudentFilter studentFilter)
         {
             try
             {
-                var students = await _studentRepository.GetAllPagination(request.PageIndex, request.PageSize);
-                var Total = _studentRepository.CountAsync();
+                var students = await _studentRepository.GetAllPagination(studentFilter);
+                var total = await _studentRepository.CountAsync(studentFilter);
                 var res = new ListInfo<StudentShared>
                 {
                     List = _studentMapper.Map<List<StudentShared>>(students),
-                    Total = Total.Result
+                    Total = total
                 };
                 return res;
             }
@@ -258,7 +258,8 @@ namespace GrpcStudentManagementService.Services
                     });
                 }
                 return res;
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 _logger.LogError(ex, "Error when getting gender count");
                 return ex.Message;

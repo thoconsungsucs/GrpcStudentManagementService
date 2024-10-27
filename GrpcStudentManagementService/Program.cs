@@ -15,11 +15,10 @@ namespace GrpcStudentManagementService
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-            //builder.Services.AddGrpc();
-            builder.Services.AddCodeFirstGrpc(config =>
-            {
-                config.ResponseCompressionLevel = System.IO.Compression.CompressionLevel.Optimal;
-            });
+            builder.Services.AddGrpc();
+            builder.Services.AddCodeFirstGrpc();
+
+            builder.Services.AddGrpcReflection();
 
             builder.Services.AddSingleton(provider => NHibernateHelper.CreateSessionFactory());
 

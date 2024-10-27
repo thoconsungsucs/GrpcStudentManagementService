@@ -2,14 +2,47 @@
 @rendermode InteractiveServer
 @using AntDesign.TableModels
 @using System.ComponentModel
-@inject IStudentService StudentService
-@inject IClassService ClassService
+
 @inject IMessageService _message
 <h3>Test</h3>
 
 
 
-<Button Type="primary" @onclick="()=> Edit(new StudentShared())">New</Button>
+
+<Button Type="primary" @onclick="()=> Edit(new StudentShared{ Dob = DateTime.Now })">New</Button>
+<Flex Gap="middle" Vertical Align="start">
+    <Flex Gap="middle" Align="flex-end">
+        <div>
+            <Text Style="display:block; width:100%">Student ID</Text>
+            <Input Placeholder="Enter Student ID" @bind-Value="@_filter.StudentId" Style="width:100px" />
+        </div>
+
+        <div>
+            <Text Style="display:block; width:100%">Name</Text>
+            <Input Placeholder="Enter Name" @bind-Value="@_filter.StudentName" Style="width:150px" />
+        </div>
+        <div>
+            <Text Style="display:block; width:100%">Date Of Birth</Text>
+            <RangePicker TValue="DateTime?[]" Picker="@DatePickerType.Month" OnChange="OnTimeRangeChange" />
+        </div>
+        <div>
+            <Text Style="display:block; width:100%">Address</Text>
+            <Input Placeholder="Enter Address" @bind-Value="@_filter.Address" Style="width:150px" />
+        </div>
+
+        <div>
+            <Text Style="display:block; width:100%">Class ID</Text>
+            <Input Placeholder="Enter Class ID" @bind-Value="@_filter.ClassId" Style="width:100px" />
+        </div>
+
+        <Button Type="default" OnClick="Search">Search</Button>
+        <Button Type="dashed" OnClick="Reset">Reset</Button>
+    </Flex>
+</Flex>
+
+
+
+
 <Table @ref="table"
        TItem="StudentShared"
        DataSource="@_students"
@@ -34,61 +67,6 @@
                     Edit
                 </Button>
 
-                <Modal Title="Edit"
-                       @bind-Visible="@_visible"
-                       OnOk="HandleOk"
-                       OnCancel="HandleCancel">
-                    <Space Direction="DirectionVHType.Vertical" Size="@("small")">
-                        <SpaceItem>
-                            <Text>Student ID</Text>
-                            <Input Placeholder="StudentId" @bind-Value="@_student.StudentId" Disabled />
-                        </SpaceItem>
-
-                        <SpaceItem>
-                            <Text>Student Name</Text>
-                            <Input Placeholder="StudentName" @bind-Value="@_student.StudentName" />
-                        </SpaceItem>
-
-                        <SpaceItem>
-                            <Text>Student Address</Text>
-                            <Input Placeholder="StudentAddress" @bind-Value="@_student.Address" />
-                        </SpaceItem>
-
-                        <SpaceItem>
-                            <Text>Student Gender</Text>
-                            <br />
-                            <Select DataSource="@_genders"
-                                    @bind-Value="@_student.Gender"
-                                    ValueName="@nameof(GenderSelection.Value)"
-                                    LabelName="@nameof(GenderSelection.Text)"
-                                    Style="width: 200px"
-                                    Placeholder="Select gender"
-                                    EnableSearch
-                                    AllowClear>
-                            </Select>
-                        </SpaceItem>
-
-                        <SpaceItem>
-                            <Text>Student Dob</Text>
-                            <br />
-                            <DatePicker @bind-Value="@_student.Dob" Format="dd/MM/yyyy" />
-                        </SpaceItem>
-
-                        <SpaceItem>
-                            <Text>Student Class Name</Text>
-                            <br />
-                            <Select DataSource="@_classes"
-                                    @bind-Value="@_student.ClassId"
-                                    ValueName="@nameof(ClassShared.ClassId)"
-                                    LabelName="@nameof(ClassShared.ClassName)"
-                                    Style="width: 200px"
-                                    Placeholder="Select class"
-                                    EnableSearch
-                                    AllowClear>
-                            </Select>
-                        </SpaceItem>
-                    </Space>
-                </Modal>
 
 
             </SpaceItem>
@@ -99,6 +77,66 @@
     </ActionColumn>
 </Table>
 
+
+<Modal Title="Edit"
+       @bind-Visible="@_visible"
+       OnOk="HandleOk"
+       OnCancel="HandleCancel">
+    <Space Direction="DirectionVHType.Vertical" Size="@("small")">
+        <SpaceItem>
+            <Text>Student ID</Text>
+            <Input Placeholder="StudentId" @bind-Value="@_student.StudentId" Disabled />
+        </SpaceItem>
+
+        <SpaceItem>
+            <Text>Student Name</Text>
+            <Input Placeholder="StudentName" @bind-Value="@_student.StudentName" />
+        </SpaceItem>
+
+        <SpaceItem>
+            <Text>Student Address</Text>
+            <Input Placeholder="StudentAddress" @bind-Value="@_student.Address" />
+        </SpaceItem>
+
+        <SpaceItem>
+            <Text>Student Gender</Text>
+            <br />
+            <Select DataSource="@_genders"
+                    @bind-Value="@_student.Gender"
+                    ValueName="@nameof(GenderSelection.Value)"
+                    LabelName="@nameof(GenderSelection.Text)"
+                    Style="width: 200px"
+                    Placeholder="Select gender"
+                    EnableSearch
+                    AllowClear>
+            </Select>
+        </SpaceItem>
+
+        <SpaceItem>
+            <Text>Student Dob</Text>
+            <br />
+            <DatePicker @bind-Value="@_student.Dob"
+                        Format="dd/MM/yyyy"
+                        DefaultValue=@DateTime.Now />
+        </SpaceItem>
+
+        <SpaceItem>
+            <Text>Student Class Name</Text>
+            <br />
+
+            <Select DataSource="@_classes"
+                    @bind-Value="@_student.ClassId"
+                    ValueName="@nameof(ClassShared.ClassId)"
+                    LabelName="@nameof(ClassShared.ClassName)"
+                    Style="width: 200px"
+                    Placeholder="Select class"
+                    EnableSearch
+                    AllowClear>
+            </Select>
+        </SpaceItem>
+    </Space>
+</Modal>
+
 <p>
     PageIndex: @_pageIndex | PageSize: @_pageSize | Total: @_total
 </p>
@@ -107,12 +145,4 @@
     Selected Items
 </h5>
 
-@if (_selectedRows != null && _selectedRows.Any())
-{
-    <Button Danger Size="small" OnClick="@(e=> { _selectedRows = null; })"> Clear </Button>
-    <Button Danger Size="small" OnClick="DeleteAll"> Delete All </Button>
-    foreach (var item in _selectedRows)
-    {
-        <Tag @key="item.StudentId" Closable OnClose="@(e=>RemoveSelection(@item.StudentId))">@item.StudentId-@item.StudentName</Tag>
-    }
-}
+

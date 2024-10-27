@@ -71,10 +71,10 @@ namespace Client
             {
                 var student = result.Value;
                 Console.WriteLine($"Student Id: {student.StudentId}");
-                Console.WriteLine($"Full Name: {student.StudentName}");
+                Console.WriteLine($"Full StudentName: {student.StudentName}");
                 Console.WriteLine($"Birthday: {student.Dob.ToString("dd/MM/yyyy")}");
                 Console.WriteLine($"Address: {student.Address}");
-                Console.WriteLine($"Class Name: {student.ClassName}");
+                Console.WriteLine($"Class StudentName: {student.ClassName}");
                 Console.WriteLine("--------------");
             }
             else
@@ -95,10 +95,10 @@ namespace Client
                 foreach (var student in result.Value)
                 {
                     Console.WriteLine($"Student Id: {student.StudentId}");
-                    Console.WriteLine($"Full Name: {student.StudentName}");
+                    Console.WriteLine($"Full StudentName: {student.StudentName}");
                     Console.WriteLine($"Birthday: {student.Dob.ToString("dd/MM/yyyy")}");
                     Console.WriteLine($"Address: {student.Address}");
-                    Console.WriteLine($"Class Name: {student.ClassName}");
+                    Console.WriteLine($"Class StudentName: {student.ClassName}");
                     Console.WriteLine("--------------");
                 }
             }
@@ -117,7 +117,7 @@ namespace Client
             DateTime.TryParse(Console.ReadLine(), out dob);
             Console.Write("Enter student's address: ");
             var address = Console.ReadLine();
-            Console.Write("Enter student's classId: ");
+            Console.Write("Enter student's ClassId: ");
 
             var classResult = _classService.GetAllClasses();
             if (classResult.IsSuccess)
@@ -205,7 +205,7 @@ namespace Client
                 return;
             }
 
-            Console.Write("Enter student's classId: ");
+            Console.Write("Enter student's ClassId: ");
             student.ClassId = int.Parse(Console.ReadLine());
 
             var result = _studentService.UpdateStudent(student);
@@ -251,18 +251,18 @@ namespace Client
         /*private int GetClassId()
         {
             ClassShared? c = null;
-            int classId = -1;
+            int ClassId = -1;
             while (c == null)
             {
                 Console.Write("Enter student's class id (0 to skip): ");
-                classId = int.Parse(Console.ReadLine());
+                ClassId = int.Parse(Console.ReadLine());
 
-                if (classId == 0)
+                if (ClassId == 0)
                 {
                     break;
                 }
 
-                c = _classService.GetClassById(classId);
+                c = _classService.GetClassById(ClassId);
 
                 if (c == null)
                 {

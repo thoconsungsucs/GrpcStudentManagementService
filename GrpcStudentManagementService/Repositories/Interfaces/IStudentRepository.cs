@@ -1,5 +1,6 @@
 ﻿using GrpcStudentManagementService.DTOs;
 using GrpcStudentManagementService.Models;
+using Shared;
 
 namespace GrpcStudentManagementService.Repositories.Interfaces
 {
@@ -10,8 +11,8 @@ namespace GrpcStudentManagementService.Repositories.Interfaces
         public void AddStudent(Student student);
         public void UpdateStudent(Student student);
         public void DeleteStudent(Student student);
-        public Task<List<Student>> GetAllPagination(int pageIndex, int pageSize);
-        public Task<int> CountAsync();
+        public Task<List<Student>> GetAllPagination(StudentFilter studentFilter);
+        public Task<int> CountAsync(StudentFilter studentFilter);
         public Task<Student> GetStudentByIdAsync(int id);
         public Task AddStudentAsync(Student student);
         public Task UpdateStudentAsync(Student student);

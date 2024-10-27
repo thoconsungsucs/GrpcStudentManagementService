@@ -2,7 +2,6 @@
 using AntDesign.Charts;
 using Microsoft.AspNetCore.Components;
 using Shared;
-using System.Collections.Generic;
 
 namespace BlazorClient.Components.Pages
 {
@@ -21,6 +20,7 @@ namespace BlazorClient.Components.Pages
         private RequestId _requestId = new RequestId();
         protected override async Task OnInitializedAsync()
         {
+            Console.WriteLine("HII");
             var genderReply = await StudentService.GetGenderCountAsync(new RequestId { Value = 0 });
             if (genderReply.IsSuccess)
             {
@@ -42,14 +42,14 @@ namespace BlazorClient.Components.Pages
             }
 
         }
-        
+
         private async void SearchByClassId(ClassSelection? item)
         {
-            var reply = await StudentService.GetGenderCountAsync(new RequestId { Value = item?.ClassId ?? 0});
+            var reply = await StudentService.GetGenderCountAsync(item == null ? new RequestId() : new RequestId { Value = item.ClassId });
             if (reply.IsSuccess)
             {
                 _genderData = reply.Value;
-                barChart.ChangeData(_genderData);
+                await barChart.ChangeData(_genderData);
             }
             else
             {

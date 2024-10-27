@@ -18,7 +18,7 @@ namespace Shared
         [OperationContract]
         public Result DeleteStudent(RequestId request);
         [OperationContract]
-        public Task<Result<ListInfo<StudentShared>>> GetAllPaginationAsync(PaginationRequest request);
+        public Task<Result<ListInfo<StudentShared>>> GetAllPaginationAsync(StudentFilter filter);
         [OperationContract]
         public Task<Result> AddAsync(StudentShared student);
         [OperationContract]
@@ -50,7 +50,7 @@ namespace Shared
 
         [DataMember(Order = 4)]
         public string Address { get; set; }
-        
+
         [DataMember(Order = 5)]
         public Gender Gender { get; set; }
 

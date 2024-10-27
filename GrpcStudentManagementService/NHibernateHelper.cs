@@ -1,7 +1,7 @@
 ﻿using FluentNHibernate.Cfg;
 using FluentNHibernate.Cfg.Db;
-using NHibernate;
 using GrpcStudentManagementService.Models;
+using NHibernate;
 namespace GrpcStudentManagementService
 {
     public class NHibernateHelper
@@ -17,7 +17,8 @@ namespace GrpcStudentManagementService
                     _sessionFactory = Fluently.Configure()
                         .Database(MsSqlConfiguration.MsSql2012
                             .ConnectionString(c => c
-                                .Server("DESKTOP-9P5CFP6")
+                                //.Server("DESKTOP-9P5CFP6")
+                                .Server("NGUYENDUYTHANH")
                                 .Database("StudentManagement")
                                 .TrustedConnection()))
                         //.ShowSql())
