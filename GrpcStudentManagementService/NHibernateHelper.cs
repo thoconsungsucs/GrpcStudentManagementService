@@ -17,14 +17,16 @@ namespace GrpcStudentManagementService
                     _sessionFactory = Fluently.Configure()
                         .Database(MsSqlConfiguration.MsSql2012
                             .ConnectionString(c => c
-                                //.Server("DESKTOP-9P5CFP6")
-                                .Server("NGUYENDUYTHANH")
+                                .Server("DESKTOP-9P5CFP6")
+                                //.Server("NGUYENDUYTHANH")
                                 .Database("StudentManagement")
-                                .TrustedConnection()))
-                        //.ShowSql())
+                                .TrustedConnection())
+                        .ShowSql())
                         .Mappings(m => m.FluentMappings.AddFromAssemblyOf<Student>())
                         .Mappings(m => m.FluentMappings.AddFromAssemblyOf<Class>())
                         .Mappings(m => m.FluentMappings.AddFromAssemblyOf<Teacher>())
+                        .Mappings(m => m.FluentMappings.AddFromAssemblyOf<Grade>())
+                        .Mappings(m => m.FluentMappings.AddFromAssemblyOf<Level>())
                         .BuildSessionFactory();
                 }
                 catch (FluentConfigurationException ex)

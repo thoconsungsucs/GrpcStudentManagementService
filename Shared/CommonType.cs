@@ -54,4 +54,46 @@ namespace Shared
         [DataMember(Order = 1)]
         public int StudentId { get; set; }
     }
+
+    [DataContract]
+    public class PieChartItem
+    {
+        [DataMember(Order = 1)]
+        public string type { get; set; }
+        [DataMember(Order = 2)]
+        public int value { get; set; }
+    }
+    [DataContract]    
+    
+    public class StudentCategorizeOption
+    {
+        [DataMember(Order = 1)]
+        public string LevelName { get; set; }
+        [DataMember(Order = 2)]
+        public int? GradeId { get; set; } = 0;
+        [DataMember(Order = 3)]
+        public bool ByGrade { get; set; }
+        [DataMember(Order = 4)]
+        public bool ByClass { get; set; }
+    }
+
+    [DataContract]
+    public class SelectionItem
+    {
+        [DataMember(Order = 1)]
+        public int Id { get; set; }
+        [DataMember(Order = 2)]
+        public string Name { get; set; }
+    }
+
+    public static class CommonType
+    {
+        public static readonly List<string> LastGrades = new List<string> { "Grade 5", "Grade 9" };
+    }
+
+    public class NameAndCount
+    {
+        public string Name { get; set; }
+        public int Count { get; set; }
+    }
 }

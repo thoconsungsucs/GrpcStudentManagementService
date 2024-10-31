@@ -26,7 +26,7 @@
         int _pageSize = 4;
         int _total = 0;
         List<GenderSelection> _genders = GenderList.Genders;
-        List<ClassSelection> _classes = new List<ClassSelection>();
+        List<SelectionItem> _classes = new List<SelectionItem>();
         StudentShared _student = new StudentShared();
         StudentFilter _filter = new StudentFilter();
         string _selectedValue;
@@ -54,8 +54,8 @@
         private void OnTimeRangeChange(DateRangeChangedEventArgs<DateTime?[]> args)
         {
             // From [0] To [1]
-            /*_filter.DobFrom = args.Dates[0].Value;
-            _filter.DobTo = args.Dates[1].Value;*/
+            _filter.DobFrom = args.Dates[0].Value;
+            _filter.DobTo = args.Dates[1].Value;
         }
 
         private void HandleCancel()

@@ -1,0 +1,51 @@
+﻿@page "/student-categorized"
+@attribute [StreamRendering]
+@rendermode @(new InteractiveServerRenderMode(false))
+@using AntDesign.Charts
+
+
+
+<Checkbox @bind-Checked="@_option.ByGrade"
+          CheckedChange="CheckChangedByGrade">
+    By Grade
+</Checkbox>
+
+<Checkbox @bind-Checked="@_option.ByClass"
+          CheckedChange="CheckChangedByLevel">
+    By Class
+</Checkbox>
+
+<Select DataSource="@_levels"
+        TItemValue="string"
+        TItem="string"
+        LabelInValue="true"
+        OnSelectedItemChanged="@(item => CategorizeByLevelName(item))"
+        Placeholder="Select Level"
+        EnableSearch
+        AllowClear
+        Style="width: 120px;">
+</Select>
+
+<Select DataSource="@_grades"
+        @bind-Value= "@defaultSelectedGrade"
+        TItemValue="SelectionItem"
+        TItem="SelectionItem"
+        LabelName="@nameof(SelectionItem.Name)"
+        OnSelectedItemChanged="@(item => CategorizeByGradeId(item))"
+        Placeholder="Select Grade"
+        EnableSearch
+        AllowClear
+        Style="width: 120px;">
+</Select>
+
+
+<Tabs>
+    <TabPane Key="2">
+        <TabTemplate>Students</TabTemplate>
+        <ChildContent>
+            <Pie Data="data2" Config="config2" @ref="pieChart" OnFirstRender="LoadData" />
+        </ChildContent>
+    </TabPane>
+</Tabs>
+
+

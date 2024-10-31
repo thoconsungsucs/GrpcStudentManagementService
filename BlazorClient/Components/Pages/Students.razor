@@ -1,12 +1,9 @@
 ﻿@page "/students"
-@rendermode InteractiveServer
+@rendermode @(new InteractiveServerRenderMode(false))
 @using AntDesign.TableModels
 @using System.ComponentModel
-
 @inject IMessageService _message
 <h3>Test</h3>
-
-
 
 
 <Button Type="primary" @onclick="()=> Edit(new StudentShared{ Dob = DateTime.Now })">New</Button>
@@ -14,7 +11,10 @@
     <Flex Gap="middle" Align="flex-end">
         <div>
             <Text Style="display:block; width:100%">Student ID</Text>
-            <Input Placeholder="Enter Student ID" @bind-Value="@_filter.StudentId" Style="width:100px" />
+            <div>
+                <AntDesign.InputNumber @bind-Value="_filter.StudentId" DefaultValue="0" PlaceHolder="please input something" ></AntDesign.InputNumber>
+            </div>
+
         </div>
 
         <div>
@@ -23,7 +23,7 @@
         </div>
         <div>
             <Text Style="display:block; width:100%">Date Of Birth</Text>
-            <RangePicker TValue="DateTime?[]" Picker="@DatePickerType.Month" OnChange="OnTimeRangeChange" />
+            <RangePicker TValue="DateTime?[]" Picker="@DatePickerType.Month" OnChange="OnTimeRangeChange"/>
         </div>
         <div>
             <Text Style="display:block; width:100%">Address</Text>
@@ -36,7 +36,7 @@
         </div>
 
         <Button Type="default" OnClick="Search">Search</Button>
-        <Button Type="dashed" OnClick="Reset">Reset</Button>
+       @*  <Button Type="dashed" OnClick="Reset">Reset</Button> *@
     </Flex>
 </Flex>
 
@@ -126,8 +126,8 @@
 
             <Select DataSource="@_classes"
                     @bind-Value="@_student.ClassId"
-                    ValueName="@nameof(ClassShared.ClassId)"
-                    LabelName="@nameof(ClassShared.ClassName)"
+                    ValueName="@nameof(SelectionItem.Id)"
+                    LabelName="@nameof(SelectionItem.Name)"
                     Style="width: 200px"
                     Placeholder="Select class"
                     EnableSearch

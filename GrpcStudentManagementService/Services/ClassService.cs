@@ -32,17 +32,17 @@ namespace GrpcStudentManagementService.Services
             return _classMapper.Map<ClassShared>(_classRepository.GetClassById(requestId.Value));
         }
 
-        public async Task<Result<List<ClassSelection>>> GetClassSelectionAsync()
+        public async Task<Result<List<SelectionItem>>> GetClassSelectionAsync()
         {
             var query = _classRepository.GetAllAsIQueryAble().Select(c => new Class
             {
                 ClassId = c.ClassId,
                 ClassName = c.ClassName,
             });
-            var classSelections = (await _classRepository.ExecuteIQueryAbleAsync(query)).Select(c => new ClassSelection
+            var classSelections = (await _classRepository.ExecuteIQueryAbleAsync(query)).Select(c => new SelectionItem
             {
-                ClassId = c.ClassId,
-                ClassName = c.ClassName,
+                Id = c.ClassId,
+                Name = c.ClassName,
             }).ToList();
             return classSelections;
 

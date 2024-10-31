@@ -30,9 +30,13 @@ namespace GrpcStudentManagementService
 
             builder.Services.AddAutoMapper(typeof(StudentMapper));
             builder.Services.AddAutoMapper(typeof(ClassMapper));
+            builder.Services.AddAutoMapper(typeof(GradeMapper));
+            builder.Services.AddAutoMapper(typeof(LevelMapper));
 
             builder.Services.AddScoped<IStudentRepository, StudentRepository>();
             builder.Services.AddScoped<IClassRepository, ClassRepository>();
+            builder.Services.AddScoped<IGradeRepository, GradeRepository>();
+            builder.Services.AddScoped<ILevelRepository, LevelRepository>();
 
             builder.Services.AddScoped<IStudentService, StudentService>();
             builder.Services.AddScoped<IClassService, ClassService>();
@@ -40,6 +44,8 @@ namespace GrpcStudentManagementService
             var app = builder.Build();
             app.MapGrpcService<StudentService>();
             app.MapGrpcService<ClassService>();
+            app.MapGrpcService<GradeService>();
+            app.MapGrpcService<LevelService>();
             // Configure the HTTP request pipeline.
             // app.MapGrpcService<GreeterService>();
             app.MapGet("/", () => "Communication with gRPC endpoints must be made through a gRPC client. To learn how to create a client, visit: https://go.microsoft.com/fwlink/?linkid=2086909");

@@ -27,6 +27,12 @@ namespace Shared
         public Task<Result> DeleteAsync(RequestId request);
         [OperationContract]
         public Task<Result<List<BarChartItem>>> GetGenderCountAsync(RequestId? requestId = null);
+        [OperationContract]
+        public Task<Result<List<PieChartItem>>> CategorizeStudent(StudentCategorizeOption option);
+        [OperationContract]
+        public Task<Result<List<PieChartItem>>> CategoizeNextYearStudentByGradeAsync();
+        [OperationContract]
+        public Task<Result<List<PieChartItem>>> CategoizeNextYearStudentByLevelAsync();
     }
 
     [DataContract]

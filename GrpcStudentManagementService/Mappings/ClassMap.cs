@@ -12,6 +12,7 @@ namespace GrpcStudentManagementService.Mappings
             Map(x => x.ClassName, "ClassName");
             Map(x => x.Subject, "Subject");
             References(x => x.Teacher, "TeacherId");
+            References(x => x.Grade, "GradeId").LazyLoad();
         }
     }
 }

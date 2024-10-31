@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shared", "Shared\Shared.csp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Client", "Client\Client.csproj", "{B0C84B97-7E87-4E34-A0C0-D646C57DE789}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorClient", "BlazorClient\BlazorClient.csproj", "{59C4E069-9A19-4EEE-B417-AF5ED47B3276}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorClient", "BlazorClient\BlazorClient.csproj", "{59C4E069-9A19-4EEE-B417-AF5ED47B3276}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

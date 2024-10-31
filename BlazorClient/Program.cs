@@ -62,6 +62,17 @@ namespace BlazorClient
                 return grpcChannel.CreateGrpcService<IClassService>();
             });
 
+            builder.Services.AddTransient<IGradeService>(services =>
+            {
+                var grpcChannel = services.GetRequiredService<GrpcChannel>();
+                return grpcChannel.CreateGrpcService<IGradeService>();
+            });
+
+            builder.Services.AddTransient<ILevelService>(services =>
+            {
+                var grpcChannel = services.GetRequiredService<GrpcChannel>();
+                return grpcChannel.CreateGrpcService<ILevelService>();
+            });
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

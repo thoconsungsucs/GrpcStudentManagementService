@@ -17,6 +17,13 @@ namespace GrpcStudentManagementService.Repositories.Interfaces
         public Task AddStudentAsync(Student student);
         public Task UpdateStudentAsync(Student student);
         public Task DeleteStudentAsync(Student student);
+        public Task<List<PieChartItem>> CategoizeStudentAsync(StudentCategorizeOption option);
         public Task<List<GenderCountItem>> GetGenderCountAsync(int classId = 0);
+        public Task<List<NameAndCount>> GetStudentCountGroupByGradeAsync();
+        public Task<List<NameAndCount>> GetStudentCountGroupByLastGradeAsync();
+        public Task<List<NameAndCount>> GetStudentCountGroupByLevelAsync();
+
+
+
     }
 }

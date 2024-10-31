@@ -1,0 +1,20 @@
+﻿@page "/next-year-student-categorized"
+@attribute [StreamRendering]
+@rendermode @(new InteractiveServerRenderMode(false))
+@using AntDesign.Charts
+
+<h3>StudentInNextYear</h3>
+<Tabs>
+    <TabPane Key="1">
+        <TabTemplate>Level</TabTemplate>
+        <ChildContent>
+            <Pie Data="_byLevel" Config="config1" @ref="pieLevelChart" />
+        </ChildContent>
+    </TabPane>
+    <TabPane Key="2">
+        <TabTemplate>Grade</TabTemplate>
+        <ChildContent>
+            <Pie Data="_byGrade" Config="config1" @ref="pieGradeChart" />
+        </ChildContent>
+    </TabPane>
+</Tabs>

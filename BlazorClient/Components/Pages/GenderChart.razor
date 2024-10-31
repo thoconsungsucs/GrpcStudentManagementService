@@ -1,6 +1,6 @@
 ﻿@page "/genderchart"
 @attribute [StreamRendering]
-@rendermode InteractiveServer
+@rendermode @(new InteractiveServerRenderMode(false))
 @using System.ComponentModel
 @using AntDesign.Charts
 @using Title = AntDesign.Charts.Title
@@ -13,10 +13,10 @@
 else
 {
     <Select DataSource="@_classes"
-            TItemValue="ClassSelection"
-            TItem="ClassSelection"
+            TItemValue="SelectionItem"
+            TItem="SelectionItem"
             LabelInValue="true"
-            LabelName="@nameof(ClassSelection.ClassName)"
+            LabelName="@nameof(SelectionItem.Name)"
             OnSelectedItemChanged="@(item => SearchByClassId(item))"
             Placeholder="Select class"
             EnableSearch

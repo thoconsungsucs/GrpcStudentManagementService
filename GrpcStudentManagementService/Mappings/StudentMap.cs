@@ -14,7 +14,7 @@ namespace GrpcStudentManagementService.Mappings
             Map(x => x.Dob, "Dob");
             Map(x => x.Address, "Address");
             Map(x => x.Gender, "Gender").CustomType<Gender>();
-            References(x => x.Class, "ClassId");
+            References(x => x.Class, "ClassId").LazyLoad();
         }
     }
 }

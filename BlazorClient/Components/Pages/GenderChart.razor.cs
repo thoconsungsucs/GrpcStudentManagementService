@@ -16,11 +16,10 @@ namespace BlazorClient.Components.Pages
 
         IChartComponent barChart;
         private List<BarChartItem>? _genderData;
-        List<ClassSelection> _classes = new List<ClassSelection>();
+        List<SelectionItem> _classes = new List<SelectionItem>();
         private RequestId _requestId = new RequestId();
         protected override async Task OnInitializedAsync()
         {
-            Console.WriteLine("HII");
             var genderReply = await StudentService.GetGenderCountAsync(new RequestId { Value = 0 });
             if (genderReply.IsSuccess)
             {
@@ -43,9 +42,9 @@ namespace BlazorClient.Components.Pages
 
         }
 
-        private async void SearchByClassId(ClassSelection? item)
+        private async void SearchByClassId(SelectionItem? item)
         {
-            var reply = await StudentService.GetGenderCountAsync(item == null ? new RequestId() : new RequestId { Value = item.ClassId });
+            var reply = await StudentService.GetGenderCountAsync(item == null ? new RequestId() : new RequestId { Value = item.Id });
             if (reply.IsSuccess)
             {
                 _genderData = reply.Value;

@@ -12,7 +12,7 @@ namespace Shared
         [OperationContract]
         public Result<List<ClassShared>> GetAllClasses();
         [OperationContract]
-        public Task<Result<List<ClassSelection>>> GetClassSelectionAsync();
+        public Task<Result<List<SelectionItem>>> GetClassSelectionAsync();
 
     }
 
@@ -36,11 +36,11 @@ namespace Shared
     }
 
     [DataContract]
-    public class ClassSelection
+    public class SelectionItem<T>
     {
         [DataMember(Order = 1)]
-        public int ClassId { get; set; }
+        public int Id { get; set; }
         [DataMember(Order = 2)]
-        public string ClassName { get; set; }
+        public string Name { get; set; }
     }
 }

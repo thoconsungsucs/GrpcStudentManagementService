@@ -95,7 +95,7 @@ namespace GrpcStudentManagementService.Repositories
                     query = query.Where(s => s.Dob <= studentFilter.DobTo);
                 }
             }
-            return query;
+            return query.Fetch(s => s.Class);
         }
 
         public async Task<List<Student>> GetAllPagination(StudentFilter studentFilter)
@@ -172,5 +172,85 @@ namespace GrpcStudentManagementService.Repositories
             var result = await sqlQuery.ListAsync<GenderCountItem>();
             return (List<GenderCountItem>)result;
         }
+
+        public async Task<List<PieChartItem>> CategoizeStudentAsync(StudentCategorizeOption option)
+        {
+            var query = _session.CreateSQLQuery(@$"
+                    SELECT
+                        COUNT(s.StudentId) AS Count,
+                        g.LevelName
+                        {(option.ByGrade || option.GradeId != 0 ? ", g.GradeName" : "")}
+                        {(option.ByClass || option.GradeId != 0 ? ", c.ClassName" : "")}
+                    FROM Student s
+                    JOIN Class c ON s.ClassId = c.ClassId
+                    JOIN (
+                        SELECT GradeId, GradeName, LevelName
+                        FROM Grade
+                        WHERE (GradeId = :GradeId OR :GradeId = 0)
+                          AND (LevelName = :LevelName OR :LevelName = '')
+                    ) g ON c.GradeId = g.GradeId
+                    GROUP BY g.LevelName
+                        {(option.ByGrade || option.GradeId != 0 ? ", g.GradeName" : "")}
+                        {(option.ByClass || option.GradeId != 0 ? ", c.ClassName" : "")}
+                ");
+
+            query.SetParameter("GradeId", option.GradeId);
+            query.SetParameter("LevelName", option.LevelName);
+
+            var list = await query.ListAsync<object[]>();
+            var res = new List<PieChartItem>();
+
+
+            foreach (var item in list)
+            {
+                res.Add(new PieChartItem
+                {
+                    type = item[item.Length - 1].ToString(),
+                    value = int.Parse(item[0].ToString()),
+                });
+            }
+            return res;
+        }
+
+
+        public async Task<List<NameAndCount>> GetStudentCountGroupByGradeAsync()
+        {
+            var studentByGradeList = await _session.Query<Student>()
+                .GroupBy(s => s.Class.Grade.GradeName)
+                .Select(g => new NameAndCount
+                {
+                    Name = g.Key,
+                    Count = g.Count()
+                }).ToListAsync();
+            return studentByGradeList;
+        }
+
+        public async Task<List<NameAndCount>> GetStudentCountGroupByLevelAsync()
+        {
+            var studentByLevelList = await _session.Query<Student>()
+                .GroupBy(s => s.Class.Grade.Level.LevelName)
+                .Select(g => new NameAndCount
+                {
+                    Name = g.Key,
+                    Count = g.Count()
+                }).ToListAsync();
+            return studentByLevelList;
+        }
+
+        public async Task<List<NameAndCount>> GetStudentCountGroupByLastGradeAsync()
+        {
+            var lastGrade = await _session.Query<Student>()
+                .Where(s => CommonType.LastGrades.Contains(s.Class.Grade.GradeName))
+                .GroupBy(s => s.Class.Grade.GradeName)
+                .Select(g => new NameAndCount
+                {
+                    Name = g.Key,
+                    Count = g.Count()
+                })
+                .ToListAsync();
+            return lastGrade;
+        }
+
+        
     }
 }

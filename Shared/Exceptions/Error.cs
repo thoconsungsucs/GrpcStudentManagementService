@@ -11,4 +11,9 @@ namespace Shared.Exceptions
     {
         public static string ClassNotFound(int classId) => $"Class {classId} does not exist";
     }
+
+    public static class GradeError
+    {
+        public static string GradeNotFound(string levelName) => $"Grade {levelName} does not exist";
+    }
 }

@@ -265,5 +265,82 @@ namespace GrpcStudentManagementService.Services
                 return ex.Message;
             }
         }
+
+        public async Task<Result<List<PieChartItem>>> CategorizeStudent(StudentCategorizeOption option)
+        {
+            try
+            {
+                return await _studentRepository.CategoizeStudentAsync(option);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error when categorizing student");
+                return ex.Message;
+            }
+        }
+
+        public async Task<Result<List<PieChartItem>>> CategoizeNextYearStudentByGradeAsync()
+        {
+            try
+            {
+                var studentByGradeList = await _studentRepository.GetStudentCountGroupByGradeAsync();
+                var lastGrade = await _studentRepository.GetStudentCountGroupByLastGradeAsync();
+
+                studentByGradeList = studentByGradeList.Where(g => g.Name != lastGrade.Last().Name).ToList();
+                foreach (var item in studentByGradeList)
+                {
+                    item.Name += "-" + (char)(item.Name.Last() + 1);
+                }
+
+                var res = new List<PieChartItem>();
+                foreach (var item in studentByGradeList)
+                {
+                    res.Add(new PieChartItem
+                    {
+                        type = item.Name,
+                        value = item.Count,
+                    });
+                }
+                return res;
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+                throw;
+            }
+        }
+
+        public async Task<Result<List<PieChartItem>>> CategoizeNextYearStudentByLevelAsync()
+        {
+            try
+            {
+                var studentByGradeList = await _studentRepository.GetStudentCountGroupByLevelAsync();
+                var lastGrade = await _studentRepository.GetStudentCountGroupByLastGradeAsync();
+
+                var res = new List<PieChartItem>();
+                foreach (var item in studentByGradeList)
+                {
+                    res.Add(new PieChartItem
+                    {
+                        type = item.Name,
+                        value = item.Count,
+                    });
+                }
+
+
+                for (int i = 0; i < res.Count; i++)
+                {
+                    res[i].value -= lastGrade[i].Count;
+                    if (i + 1 < res.Count)
+                        res[i + 1].value += lastGrade[i].Count;
+                }
+                return res;
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+                throw;
+            }
+        }
     }
 }
