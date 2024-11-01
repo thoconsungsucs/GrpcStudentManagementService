@@ -102,6 +102,7 @@ namespace GrpcStudentManagementService.Repositories
         {
             var query = Filter(studentFilter);
             return await query
+                .OrderByDescending(s => s.StudentId)
                 .Skip((studentFilter.PageIndex - 1) * studentFilter.PageSize)
                 .Take(studentFilter.PageSize)
                 .ToListAsync();
@@ -242,6 +243,7 @@ namespace GrpcStudentManagementService.Repositories
             var lastGrade = await _session.Query<Student>()
                 .Where(s => CommonType.LastGrades.Contains(s.Class.Grade.GradeName))
                 .GroupBy(s => s.Class.Grade.GradeName)
+                .OrderBy(g => g.Key)
                 .Select(g => new NameAndCount
                 {
                     Name = g.Key,
