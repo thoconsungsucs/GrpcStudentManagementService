@@ -1,0 +1,55 @@
+﻿
+    <Space Direction="DirectionVHType.Vertical" Size="@("small")">
+        <SpaceItem>
+            <Text>Student ID</Text>
+            <Input Placeholder="StudentId" @bind-Value="@_student.StudentId" Disabled />
+        </SpaceItem>
+
+        <SpaceItem>
+            <Text>Student Name</Text>
+            <Input Placeholder="StudentName" @bind-Value="@_student.StudentName" />
+        </SpaceItem>
+
+        <SpaceItem>
+            <Text>Student Address</Text>
+            <Input Placeholder="StudentAddress" @bind-Value="@_student.Address" />
+        </SpaceItem>
+
+        <SpaceItem>
+            <Text>Student Gender</Text>
+            <br />
+            <Select DataSource="@_genders"
+                    @bind-Value="@_student.Gender"
+                    ValueName="@nameof(GenderSelection.Value)"
+                    LabelName="@nameof(GenderSelection.Text)"
+                    Style="width: 200px"
+                    Placeholder="Select gender"
+                    EnableSearch
+                    AllowClear>
+            </Select>
+        </SpaceItem>
+
+        <SpaceItem>
+            <Text>Student Dob</Text>
+            <br />
+            <DatePicker @bind-Value="@_student.Dob"
+                        Format="dd/MM/yyyy"
+                        DefaultValue=@DateTime.Now />
+        </SpaceItem>
+
+        <SpaceItem>
+            <Text>Student Class Name</Text>
+            <br />
+
+            <Select DataSource="@_classes"
+                    @bind-Value="@_student.ClassId"
+                    ValueName="@nameof(SelectionItem.Id)"
+                    LabelName="@nameof(SelectionItem.Name)"
+                    Style="width: 200px"
+                    Placeholder="Select class"
+                    EnableSearch
+                    AllowClear>
+            </Select>
+        </SpaceItem>
+    </Space>
+

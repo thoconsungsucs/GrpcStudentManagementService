@@ -29,8 +29,6 @@
         List<SelectionItem> _classes = new List<SelectionItem>();
         StudentShared _student = new StudentShared();
         StudentFilter _filter = new StudentFilter();
-        string _selectedValue;
-        string _selectedItem;
 
         protected override async Task OnInitializedAsync()
         {

@@ -12,7 +12,7 @@
         <div>
             <Text Style="display:block; width:100%">Student ID</Text>
             <div>
-                <AntDesign.InputNumber @bind-Value="_filter.StudentId" DefaultValue="0" PlaceHolder="please input something" ></AntDesign.InputNumber>
+                <AntDesign.InputNumber @bind-Value="_filter.StudentId" DefaultValue="0" PlaceHolder="please input something"></AntDesign.InputNumber>
             </div>
 
         </div>
@@ -23,7 +23,7 @@
         </div>
         <div>
             <Text Style="display:block; width:100%">Date Of Birth</Text>
-            <RangePicker TValue="DateTime?[]" Picker="@DatePickerType.Month" OnChange="OnTimeRangeChange"/>
+            <RangePicker TValue="DateTime?[]" Picker="@DatePickerType.Month" OnChange="OnTimeRangeChange" />
         </div>
         <div>
             <Text Style="display:block; width:100%">Address</Text>
@@ -36,7 +36,7 @@
         </div>
 
         <Button Type="default" OnClick="Search">Search</Button>
-       @*  <Button Type="dashed" OnClick="Reset">Reset</Button> *@
+        @*  <Button Type="dashed" OnClick="Reset">Reset</Button> *@
     </Flex>
 </Flex>
 
@@ -78,7 +78,7 @@
 </Table>
 
 
-<Modal Title="Edit"
+@* <Modal Title="Edit"
        @bind-Visible="@_visible"
        OnOk="HandleOk"
        OnCancel="HandleCancel">
@@ -135,6 +135,14 @@
             </Select>
         </SpaceItem>
     </Space>
+</Modal>
+ *@
+
+<Modal Title="Edit"
+       @bind-Visible="@_visible"
+       OnOk="HandleOk"
+       OnCancel="HandleCancel">
+    <StudentEditAdd _classes="_classes" _student="_student" />
 </Modal>
 
 <p>
